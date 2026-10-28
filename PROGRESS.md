@@ -1,8 +1,7 @@
 # MediFind – Progress
 
 ## Current phase
-**Phase 7 – Deployment: done.** You confirmed the live site works on your phone. Waiting for your approval.
-Next: Phase 8 – README and demo script for each role.
+**All phases done (1–8).** Phase 8 – README and viva notes: written and checked. Waiting for your approval, and your OK to push (pushing redeploys the live site).
 
 ## Roadmap
 1. ✅ Skeleton
@@ -12,7 +11,7 @@ Next: Phase 8 – README and demo script for each role.
 5. ✅ Customer search, map and pharmacy details
 6. ✅ Availability requests
 7. ✅ Deployment (Neon, Render, HTTPS settings, health check)
-8. README and demo script for each role
+8. ✅ README and demo script for each role
 
 ## Completed phases
 
@@ -121,6 +120,13 @@ Next: Phase 8 – README and demo script for each role.
   - Admin account and demo data created in Neon from the laptop (`createsuperuser`, `seed_demo` with a new password, not the example one). The live database does not contain the local test accounts.
 - **Confirmed by you:** the public URL and the admin panel load on your phone.
 
+### Phase 8 – README, demo script and viva notes
+- (Matches your original Phase 9.)
+- `README.md`: about + live link, roles and features, tech stack with reasons, project structure, local setup, creating the admin and approving pharmacies, demo data (usernames only, no passwords), tests (118, table per file), Render + Neon deployment, security, known limitations, and a phone demo script for visitor, customer, pharmacy, admin and a security check.
+- Demo script uses Narmada for the new request, because the demo data already has a pending Dolo request at Sanjeevani (it is used to show the duplicate rule instead).
+- `VIVA_NOTES.md`: likely viva questions with short answers and the file to show. **Git-ignored on purpose** (`.gitignore`), so it never goes to GitHub or the live site. Keep a backup copy yourself (e.g. on a pen drive or phone).
+- Verified: README setup followed in a fresh copy of the repository (clone has no `.env`, database or viva notes; `pip install`, `.env` from the example, `migrate`, `seed_demo`, `loaddata`, `check`, `makemigrations --check`, `createsuperuser` all work). Every demo-script step run in that copy and gave the expected result (login redirect, request sent, duplicate refused, pharmacy confirms, stock 0 removes it from search, admin approval adds Arogya, 403, login redirect, 404). Live site: `/healthz/` 200 ok, HSTS header, search lists the 3 approved demo pharmacies. 118 tests pass.
+
 ## Files created
 
 | File | Purpose |
@@ -132,6 +138,8 @@ Next: Phase 8 – README and demo script for each role.
 | `.gitignore` | Keeps `.env`, `venv/`, `db.sqlite3`, `staticfiles/` out of git |
 | `.claude/launch.json` | Dev-server config for the Claude browser preview |
 | `PROGRESS.md` | This file |
+| `README.md` | Project documentation and demo script (on GitHub) |
+| `VIVA_NOTES.md` | Private viva Q&A – git-ignored, this computer only |
 | `build.sh` | Render build script: install, collectstatic, migrate |
 | `.python-version` | Python version for Render (3.13) |
 | `.gitattributes` | Keeps `.sh` files with Linux line endings |

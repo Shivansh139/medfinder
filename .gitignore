@@ -17,3 +17,6 @@ staticfiles/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Personal viva notes - kept on this computer only
+VIVA_NOTES.md
