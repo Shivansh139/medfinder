@@ -1,0 +1,8 @@
+{# Simple medicine search box. Sends ?q=... to the search page (GET). #}
+<form method="get" action="{% url 'search' %}" role="search">
+  <div class="input-group input-group-lg">
+    <input type="search" name="q" class="form-control" required maxlength="100"
+           placeholder="Search a medicine, e.g. Dolo 650" aria-label="Medicine name">
+    <button type="submit" class="btn btn-success">Search</button>
+  </div>
+</form>

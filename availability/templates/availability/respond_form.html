@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Respond to request{% endblock %}
+
+{% block content %}
+{% with r=availability_request %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4 mb-3">Respond to request</h1>
+
+        <div class="border rounded p-3 mb-3 bg-light">
+          <div class="fw-semibold">{{ r.medicine.name }} <span class="text-muted fw-normal">{{ r.medicine.strength }}</span> × {{ r.quantity }}</div>
+          <div class="small text-muted">From {{ r.customer.username }} · {{ r.created_at|timesince }} ago</div>
+          {% if r.note %}<div class="small mt-1"><span class="text-muted">Message:</span> {{ r.note }}</div>{% endif %}
+          {% if r.contact_phone %}
+            <div class="small mt-1">Customer phone: <a href="tel:{{ r.contact_phone|cut:' ' }}">{{ r.contact_phone }}</a></div>
+          {% endif %}
+        </div>
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% include "includes/form_fields.html" %}
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Send answer</button>
+            <a href="{% url 'pharmacy_requests' %}" class="btn btn-outline-secondary">Back</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endwith %}
+{% endblock %}

@@ -1,0 +1,28 @@
+/* MediFind custom styles. Bootstrap does most of the work; keep this small. */
+
+.navbar-brand {
+  letter-spacing: 0.5px;
+}
+
+/* Leaflet maps need an explicit height, or they collapse to 0 px. */
+.location-map {
+  height: 350px;
+  border-radius: 0.375rem;
+}
+
+.location-map-small {
+  height: 250px;
+}
+
+/* Search results map: short on phones, tall and "sticky" beside the list on desktop. */
+.results-map {
+  height: 250px;
+}
+
+@media (min-width: 992px) {
+  .results-map {
+    height: 480px;
+    position: sticky;
+    top: 1rem;
+  }
+}

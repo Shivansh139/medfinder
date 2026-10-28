@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load l10n %}
+
+{% block title %}Edit pharmacy profile{% endblock %}
+
+{% block extra_head %}{% include "includes/leaflet_css.html" %}{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">Edit pharmacy profile</h1>
+
+<div class="row g-4">
+  <!-- Left: the form. On phones the map appears below it. -->
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        {# Shown read-only: only an administrator can change these #}
+        <p class="mb-1"><strong>Licence number:</strong> {{ pharmacy.licence_number }}</p>
+        <p class="mb-3"><strong>Status:</strong> {{ pharmacy.get_status_display }}</p>
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% include "includes/form_fields.html" %}
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Save changes</button>
+            <a href="{% url 'pharmacy_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: the map -->
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h5">Location</h2>
+        <p class="text-muted small mb-2">Click the map to place your pharmacy, then drag the pin to adjust.</p>
+
+        {# unlocalize keeps the decimal point as "." for JavaScript #}
+        <div id="location-map" class="location-map"
+             data-editable="true"
+             data-lat="{{ form.latitude.value|default_if_none:''|unlocalize }}"
+             data-lng="{{ form.longitude.value|default_if_none:''|unlocalize }}"></div>
+
+        <div class="d-flex flex-wrap gap-2 mt-2">
+          {# type="button" so these do not submit the form #}
+          <button type="button" id="use-my-location" class="btn btn-sm btn-outline-success">Use my current location</button>
+          <button type="button" id="clear-location" class="btn btn-sm btn-outline-secondary">Clear location</button>
+        </div>
+        <div id="location-status" class="form-text" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}{% include "includes/leaflet_js.html" %}{% endblock %}

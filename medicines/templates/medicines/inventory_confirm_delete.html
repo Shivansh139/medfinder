@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Remove medicine{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4">Remove from inventory?</h1>
+        <p>
+          <strong>{{ item.medicine }}</strong> will be removed from your inventory.
+          To show it as temporarily unavailable instead, <a href="{% url 'inventory_edit' item.pk %}">set its quantity to 0</a>.
+        </p>
+        {# Deleting changes data, so it must be a POST form with a CSRF token #}
+        <form method="post" class="d-flex gap-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, remove</button>
+          <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

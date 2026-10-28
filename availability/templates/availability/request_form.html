@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Request availability{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4 mb-3">Ask the pharmacy</h1>
+
+        <!-- What is being requested (fixed by the URL, not editable) -->
+        <div class="border rounded p-3 mb-3 bg-light">
+          <div class="fw-semibold">{{ item.medicine.name }} <span class="text-muted fw-normal">{{ item.medicine.strength }}</span></div>
+          <div class="small text-muted">{{ item.medicine.active_ingredient }} · {{ item.medicine.get_form_display }}</div>
+          <div class="mt-2">
+            at <strong>{{ item.pharmacy.name }}</strong>
+            {% if item.is_available %}
+              <span class="badge text-bg-success">Listed in stock</span>
+            {% else %}
+              <span class="badge text-bg-danger">Listed out of stock</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <p class="small text-muted">
+          The pharmacy will confirm whether it is available. Check
+          <a href="{% url 'my_requests' %}">My requests</a> for their answer.
+        </p>
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% include "includes/form_fields.html" %}
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Send request</button>
+            <a href="{% url 'pharmacy_detail' item.pharmacy.pk %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

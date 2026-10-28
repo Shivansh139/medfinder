@@ -1,0 +1,118 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Makes the page scale correctly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Each page can set its own title by overriding this block -->
+  <title>{% block title %}MediFind{% endblock %} | MediFind</title>
+
+  <!-- Bootstrap 5 CSS from a CDN (no install needed) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <!-- Our own small stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Navigation bar. "navbar-expand-lg" means: show links in a row on large
+       screens, and collapse them behind a menu button on small screens. -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+      <!-- me-2 / px-2 below keep brand, buttons and menu icon on one line,
+           even on the narrowest phones (320 px). -->
+      <a class="navbar-brand fw-bold me-2" href="{% url 'home' %}">MediFind</a>
+
+      {% if not user.is_authenticated %}
+        <!-- Log in / Sign up sit OUTSIDE the collapsible menu, so they are
+             always visible, even on phones. "ms-auto" pushes them to the right;
+             on large screens "order-lg-last" moves them after the menu links. -->
+        <div class="d-flex gap-2 ms-auto ms-lg-3 order-lg-last">
+          <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Log in</a>
+          <a class="btn btn-light btn-sm" href="{% url 'signup' %}">Sign up</a>
+        </div>
+      {% endif %}
+
+      <!-- Hamburger button, only visible on small screens -->
+      <button class="navbar-toggler ms-2 px-2" type="button"
+              data-bs-toggle="collapse" data-bs-target="#mainNav"
+              aria-controls="mainNav" aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+               href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'search' %}active{% endif %}"
+               href="{% url 'search' %}">Search medicines</a>
+          </li>
+        </ul>
+
+        <!-- Hiding links here is only for convenience. Every page also checks
+             permissions on the server. -->
+        {% if user.is_authenticated %}
+          <ul class="navbar-nav align-items-lg-center">
+            <li class="nav-item">
+              <span class="navbar-text me-lg-2">Hello, {{ user.username }}</span>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+            {% if user.is_pharmacy %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'inventory_list' %}">Inventory</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'pharmacy_requests' %}">Requests</a></li>
+            {% elif user.is_customer %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'my_requests' %}">My requests</a></li>
+            {% endif %}
+            {% if user.is_staff %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+            {% endif %}
+            <li class="nav-item">
+              <!-- Logout must be a POST request, so it is a small form, not a link. -->
+              <form method="post" action="{% url 'logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link nav-link">Log out</button>
+              </form>
+            </li>
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow-1">
+    <div class="container py-4">
+      <!-- Show one-time messages (success, error, ...) from Django's messages framework -->
+      {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+
+      <!-- Each page puts its main content here -->
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="bg-light border-top py-3 mt-auto">
+    <div class="container text-center text-muted small">
+      &copy; {% now "Y" %} MediFind &middot; Find medicines near you
+      <div class="mt-1">Demo project: pharmacies, stock and prices shown are fictional.</div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS (needed for the collapsible menu and dismissible alerts) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+          crossorigin="anonymous"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

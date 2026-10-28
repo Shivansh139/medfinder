@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load l10n %}
+
+{% block title %}Pharmacy dashboard{% endblock %}
+
+{% block extra_head %}{% include "includes/leaflet_css.html" %}{% endblock %}
+
+{% block content %}
+{% if not pharmacy %}
+  {# A pharmacy user without a pharmacy record (e.g. created by hand in admin) #}
+  <div class="alert alert-warning">
+    No pharmacy is linked to your account. Please contact an administrator.
+  </div>
+{% else %}
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0">{{ pharmacy.name }}</h1>
+    <a href="{% url 'pharmacy_profile' %}" class="btn btn-success">Edit profile</a>
+  </div>
+
+  {# Show a different message for each approval status #}
+  {% if pharmacy.status == "approved" %}
+    <div class="alert alert-success">Your pharmacy is <strong>approved</strong> and will be visible to customers.</div>
+  {% elif pharmacy.status == "rejected" %}
+    <div class="alert alert-danger">Your registration was <strong>rejected</strong>. Please contact an administrator.</div>
+  {% else %}
+    <div class="alert alert-warning">Your registration is <strong>awaiting approval</strong> by an administrator.</div>
+  {% endif %}
+
+  {% if not pharmacy.has_location %}
+    <div class="alert alert-warning">
+      Set your location so customers can find you.
+      <a href="{% url 'pharmacy_profile' %}" class="alert-link">Set location</a>
+    </div>
+  {% endif %}
+
+  {% if pharmacy.status != "rejected" %}
+    <!-- Stock summary. Rejected pharmacies cannot manage inventory. -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <h2 class="h5 mb-1">Inventory</h2>
+          <div class="text-muted">
+            {{ stock_total }} medicine{{ stock_total|pluralize }}
+            {% if stock_out %}· <span class="text-danger">{{ stock_out }} out of stock</span>{% endif %}
+          </div>
+        </div>
+        <a href="{% url 'inventory_list' %}" class="btn btn-outline-success">Manage inventory</a>
+      </div>
+    </div>
+
+    <!-- Customer requests waiting for an answer -->
+    <div class="card shadow-sm mb-4 {% if pending_requests %}border-warning{% endif %}">
+      <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <h2 class="h5 mb-1">Customer requests</h2>
+          <div class="{% if pending_requests %}text-warning-emphasis fw-semibold{% else %}text-muted{% endif %}">
+            {{ pending_requests }} pending request{{ pending_requests|pluralize }}
+          </div>
+        </div>
+        <a href="{% url 'pharmacy_requests' %}" class="btn btn-outline-success">View requests</a>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h5">Registered details</h2>
+          <dl class="row mb-0">
+            <dt class="col-sm-4">Licence number</dt><dd class="col-sm-8">{{ pharmacy.licence_number }}</dd>
+            <dt class="col-sm-4">Address</dt><dd class="col-sm-8">{{ pharmacy.address|linebreaksbr }}</dd>
+            <dt class="col-sm-4">Phone</dt><dd class="col-sm-8">{{ pharmacy.phone }}</dd>
+            <dt class="col-sm-4">Opening hours</dt><dd class="col-sm-8">{{ pharmacy.opening_hours|default:"Not set" }}</dd>
+            <dt class="col-sm-4">Home delivery</dt>
+            <dd class="col-sm-8">
+              {% if pharmacy.home_delivery_available %}Yes · {{ pharmacy.home_delivery_phone }}{% else %}No{% endif %}
+            </dd>
+            <dt class="col-sm-4">Status</dt><dd class="col-sm-8">{{ pharmacy.get_status_display }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    {% if pharmacy.has_location %}
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h2 class="h5">Location</h2>
+            {# Read-only map: data-editable="false" #}
+            <div id="location-map" class="location-map location-map-small"
+                 data-editable="false"
+                 data-lat="{{ pharmacy.latitude|unlocalize }}"
+                 data-lng="{{ pharmacy.longitude|unlocalize }}"></div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}{% include "includes/leaflet_js.html" %}{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{# This page fills in the blocks defined in base.html #}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero section -->
+<section class="text-center py-5">
+  <h1 class="display-5 fw-bold">Find medicines at pharmacies near you</h1>
+  <p class="lead text-muted col-lg-8 mx-auto">
+    MediFind lets you search for a medicine, see which nearby pharmacies list it,
+    and ask the pharmacy to confirm it is in stock before you travel.
+  </p>
+  <div class="col-lg-7 mx-auto mt-4">
+    {% include "includes/search_box.html" %}
+  </div>
+</section>
+
+<!-- "How it works" cards. On phones they stack; on medium+ screens they sit in a row. -->
+<section class="row g-4">
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 card-title">For customers</h2>
+        <p class="card-text">Search medicines, view pharmacies on a map, and request availability confirmation.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 card-title">For pharmacies</h2>
+        <p class="card-text">Register your pharmacy, keep your profile and inventory up to date, and answer requests.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 card-title">For administrators</h2>
+        <p class="card-text">Review and approve pharmacy registrations so customers only see verified pharmacies.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

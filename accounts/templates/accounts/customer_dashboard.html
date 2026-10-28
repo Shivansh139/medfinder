@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}My dashboard{% endblock %}
+
+{% block content %}
+<h1 class="h3">Hello, {{ user.username }}</h1>
+<p class="text-muted">You are logged in as a customer.</p>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="h5">Find a medicine</h2>
+    {% include "includes/search_box.html" %}
+  </div>
+</div>
+
+<div class="card shadow-sm mt-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h2 class="h5 mb-0">Recent requests</h2>
+      <a href="{% url 'my_requests' %}" class="small">See all</a>
+    </div>
+    {% if recent_requests %}
+      <ul class="list-unstyled mb-0">
+        {% for r in recent_requests %}
+          <li class="d-flex justify-content-between gap-2 py-1 border-bottom">
+            <span class="small">{{ r.medicine.name }} · {{ r.pharmacy.name }}</span>
+            <span class="badge {{ r.badge_class }} align-self-center">{{ r.get_status_display }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="small text-muted mb-0">No requests yet. Search for a medicine and press "Ask pharmacy".</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

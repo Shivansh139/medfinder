@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-center">Create an account</h1>
+<div class="row g-4 justify-content-center">
+  <div class="col-md-5">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body d-flex flex-column">
+        <h2 class="h5">I am a customer</h2>
+        <p class="flex-grow-1">Search for medicines and ask pharmacies to confirm availability.</p>
+        <a class="btn btn-success" href="{% url 'customer_signup' %}">Sign up as customer</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body d-flex flex-column">
+        <h2 class="h5">I run a pharmacy</h2>
+        <p class="flex-grow-1">Register your pharmacy. An administrator will review it before it is listed.</p>
+        <a class="btn btn-outline-success" href="{% url 'pharmacy_signup' %}">Register a pharmacy</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

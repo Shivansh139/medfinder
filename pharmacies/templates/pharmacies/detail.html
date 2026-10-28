@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load l10n %}
+
+{% block title %}{{ pharmacy.name }}{% endblock %}
+
+{% block extra_head %}{% include "includes/leaflet_css.html" %}{% endblock %}
+
+{% block content %}
+<a href="{% url 'search' %}" class="small text-decoration-none">← Search medicines</a>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mt-2 mb-3">
+  <div>
+    <h1 class="h3 mb-1">{{ pharmacy.name }}</h1>
+    <div class="text-muted">{{ pharmacy.address|linebreaksbr }}</div>
+    {% if distance_km is not None %}
+      <div class="small mt-1">{{ distance_km|floatformat:1 }} km from {{ location.label }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Action buttons. tel: links open the phone's dialler. -->
+<div class="d-flex flex-wrap gap-2 mb-3">
+  <a href="tel:{{ pharmacy.phone|cut:' ' }}" class="btn btn-success">📞 Call pharmacy</a>
+  {% if pharmacy.home_delivery_available and pharmacy.home_delivery_phone %}
+    <a href="tel:{{ pharmacy.home_delivery_phone|cut:' ' }}" class="btn btn-primary">🚚 Call for Home Delivery</a>
+  {% endif %}
+  {% if pharmacy.has_location %}
+    {# A plain link to Google Maps directions: no API key, no cost #}
+    <a href="https://www.google.com/maps/dir/?api=1&amp;destination={{ pharmacy.latitude|unlocalize }},{{ pharmacy.longitude|unlocalize }}"
+       class="btn btn-outline-secondary" target="_blank" rel="noopener">🧭 Directions</a>
+  {% endif %}
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5 order-lg-2">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-5">Phone</dt><dd class="col-7">{{ pharmacy.phone }}</dd>
+          <dt class="col-5">Opening hours</dt><dd class="col-7">{{ pharmacy.opening_hours|default:"Not given" }}</dd>
+          <dt class="col-5">Home delivery</dt>
+          <dd class="col-7">{% if pharmacy.home_delivery_available %}Yes · {{ pharmacy.home_delivery_phone }}{% else %}No{% endif %}</dd>
+        </dl>
+      </div>
+    </div>
+    {% if pharmacy.has_location %}
+      {# Read-only map, drawn by location_picker.js (data-editable="false") #}
+      <div id="location-map" class="location-map location-map-small border rounded mb-3"
+           data-editable="false"
+           data-lat="{{ pharmacy.latitude|unlocalize }}"
+           data-lng="{{ pharmacy.longitude|unlocalize }}"></div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-7 order-lg-1">
+    {% include "includes/stock_notice.html" %}
+    <h2 class="h5">Medicines</h2>
+    {% if items %}
+      <div class="list-group shadow-sm">
+        {% for item in items %}
+          <div class="list-group-item">
+            <div class="d-flex justify-content-between gap-2">
+              <div>
+                <div class="fw-semibold">{{ item.medicine.name }} <span class="text-muted fw-normal">{{ item.medicine.strength }}</span></div>
+                <div class="small text-muted">{{ item.medicine.active_ingredient }} · {{ item.medicine.get_form_display }}</div>
+              </div>
+              <div class="text-end text-nowrap">
+                {% if item.is_available %}
+                  <span class="badge text-bg-success">In stock</span>
+                {% else %}
+                  <span class="badge text-bg-danger">Out of stock</span>
+                {% endif %}
+                <div class="small mt-1">₹{{ item.price }}</div>
+              </div>
+            </div>
+            {% if item.is_stale %}
+              <div class="small text-warning-emphasis mt-1">⚠ Updated {{ item.last_updated|timesince }} ago – may be outdated</div>
+            {% endif %}
+            {% if not user.is_authenticated or user.is_customer %}
+              <a href="{% url 'request_create' item.pk %}" class="btn btn-sm btn-outline-primary mt-2">Ask pharmacy</a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-secondary">This pharmacy has not listed any medicines yet.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}{% include "includes/leaflet_js.html" %}{% endblock %}

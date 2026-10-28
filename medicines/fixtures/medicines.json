@@ -1,0 +1,410 @@
+[
+  {
+    "model": "medicines.medicine",
+    "pk": 1,
+    "fields": {
+      "name": "Dolo 650",
+      "brand": "Micro Labs",
+      "active_ingredient": "Paracetamol",
+      "strength": "650 mg",
+      "form": "tablet",
+      "category": "pain_fever"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 2,
+    "fields": {
+      "name": "Crocin Advance",
+      "brand": "GSK",
+      "active_ingredient": "Paracetamol",
+      "strength": "500 mg",
+      "form": "tablet",
+      "category": "pain_fever"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 3,
+    "fields": {
+      "name": "Calpol Syrup",
+      "brand": "GSK",
+      "active_ingredient": "Paracetamol",
+      "strength": "120 mg/5 ml",
+      "form": "syrup",
+      "category": "pain_fever"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 4,
+    "fields": {
+      "name": "Combiflam",
+      "brand": "Sanofi",
+      "active_ingredient": "Ibuprofen + Paracetamol",
+      "strength": "400 mg + 325 mg",
+      "form": "tablet",
+      "category": "pain_fever"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 5,
+    "fields": {
+      "name": "Brufen 400",
+      "brand": "Abbott",
+      "active_ingredient": "Ibuprofen",
+      "strength": "400 mg",
+      "form": "tablet",
+      "category": "pain_fever"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 6,
+    "fields": {
+      "name": "Azithral 500",
+      "brand": "Alembic",
+      "active_ingredient": "Azithromycin",
+      "strength": "500 mg",
+      "form": "tablet",
+      "category": "antibiotic"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 7,
+    "fields": {
+      "name": "Augmentin 625 Duo",
+      "brand": "GSK",
+      "active_ingredient": "Amoxicillin + Clavulanic acid",
+      "strength": "500 mg + 125 mg",
+      "form": "tablet",
+      "category": "antibiotic"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 8,
+    "fields": {
+      "name": "Mox 500",
+      "brand": "Sun Pharma",
+      "active_ingredient": "Amoxicillin",
+      "strength": "500 mg",
+      "form": "capsule",
+      "category": "antibiotic"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 9,
+    "fields": {
+      "name": "Ciplox 500",
+      "brand": "Cipla",
+      "active_ingredient": "Ciprofloxacin",
+      "strength": "500 mg",
+      "form": "tablet",
+      "category": "antibiotic"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 10,
+    "fields": {
+      "name": "Moxicip Eye Drops",
+      "brand": "Cipla",
+      "active_ingredient": "Moxifloxacin",
+      "strength": "0.5%",
+      "form": "drops",
+      "category": "antibiotic"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 11,
+    "fields": {
+      "name": "Glycomet 500",
+      "brand": "USV",
+      "active_ingredient": "Metformin",
+      "strength": "500 mg",
+      "form": "tablet",
+      "category": "diabetes"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 12,
+    "fields": {
+      "name": "Amaryl 1",
+      "brand": "Sanofi",
+      "active_ingredient": "Glimepiride",
+      "strength": "1 mg",
+      "form": "tablet",
+      "category": "diabetes"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 13,
+    "fields": {
+      "name": "Januvia 100",
+      "brand": "MSD",
+      "active_ingredient": "Sitagliptin",
+      "strength": "100 mg",
+      "form": "tablet",
+      "category": "diabetes"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 14,
+    "fields": {
+      "name": "Huminsulin R",
+      "brand": "Eli Lilly",
+      "active_ingredient": "Human insulin",
+      "strength": "40 IU/ml",
+      "form": "injection",
+      "category": "diabetes"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 15,
+    "fields": {
+      "name": "Telma 40",
+      "brand": "Glenmark",
+      "active_ingredient": "Telmisartan",
+      "strength": "40 mg",
+      "form": "tablet",
+      "category": "heart_bp"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 16,
+    "fields": {
+      "name": "Amlokind 5",
+      "brand": "Mankind",
+      "active_ingredient": "Amlodipine",
+      "strength": "5 mg",
+      "form": "tablet",
+      "category": "heart_bp"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 17,
+    "fields": {
+      "name": "Ecosprin 75",
+      "brand": "USV",
+      "active_ingredient": "Aspirin",
+      "strength": "75 mg",
+      "form": "tablet",
+      "category": "heart_bp"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 18,
+    "fields": {
+      "name": "Atorva 10",
+      "brand": "Zydus",
+      "active_ingredient": "Atorvastatin",
+      "strength": "10 mg",
+      "form": "tablet",
+      "category": "heart_bp"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 19,
+    "fields": {
+      "name": "Okacet",
+      "brand": "Cipla",
+      "active_ingredient": "Cetirizine",
+      "strength": "10 mg",
+      "form": "tablet",
+      "category": "allergy"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 20,
+    "fields": {
+      "name": "Allegra 120",
+      "brand": "Sanofi",
+      "active_ingredient": "Fexofenadine",
+      "strength": "120 mg",
+      "form": "tablet",
+      "category": "allergy"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 21,
+    "fields": {
+      "name": "Montair LC",
+      "brand": "Cipla",
+      "active_ingredient": "Montelukast + Levocetirizine",
+      "strength": "10 mg + 5 mg",
+      "form": "tablet",
+      "category": "allergy"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 22,
+    "fields": {
+      "name": "Otrivin Nasal Drops",
+      "brand": "GSK",
+      "active_ingredient": "Xylometazoline",
+      "strength": "0.1%",
+      "form": "drops",
+      "category": "allergy"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 23,
+    "fields": {
+      "name": "Asthalin Inhaler",
+      "brand": "Cipla",
+      "active_ingredient": "Salbutamol",
+      "strength": "100 mcg",
+      "form": "inhaler",
+      "category": "breathing"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 24,
+    "fields": {
+      "name": "Ascoril LS Syrup",
+      "brand": "Glenmark",
+      "active_ingredient": "Ambroxol + Levosalbutamol + Guaifenesin",
+      "strength": "30 mg + 1 mg + 50 mg /5 ml",
+      "form": "syrup",
+      "category": "breathing"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 25,
+    "fields": {
+      "name": "Pan 40",
+      "brand": "Alkem",
+      "active_ingredient": "Pantoprazole",
+      "strength": "40 mg",
+      "form": "tablet",
+      "category": "stomach"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 26,
+    "fields": {
+      "name": "Omez 20",
+      "brand": "Dr. Reddy's",
+      "active_ingredient": "Omeprazole",
+      "strength": "20 mg",
+      "form": "capsule",
+      "category": "stomach"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 27,
+    "fields": {
+      "name": "Domstal 10",
+      "brand": "Torrent",
+      "active_ingredient": "Domperidone",
+      "strength": "10 mg",
+      "form": "tablet",
+      "category": "stomach"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 28,
+    "fields": {
+      "name": "Electral ORS",
+      "brand": "FDC",
+      "active_ingredient": "Oral rehydration salts",
+      "strength": "21.8 g sachet",
+      "form": "other",
+      "category": "stomach"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 29,
+    "fields": {
+      "name": "Becosules",
+      "brand": "Pfizer",
+      "active_ingredient": "Vitamin B-complex + Vitamin C",
+      "strength": "1 capsule",
+      "form": "capsule",
+      "category": "vitamins"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 30,
+    "fields": {
+      "name": "Shelcal 500",
+      "brand": "Torrent",
+      "active_ingredient": "Calcium + Vitamin D3",
+      "strength": "500 mg + 250 IU",
+      "form": "tablet",
+      "category": "vitamins"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 31,
+    "fields": {
+      "name": "Limcee",
+      "brand": "Abbott",
+      "active_ingredient": "Vitamin C",
+      "strength": "500 mg",
+      "form": "tablet",
+      "category": "vitamins"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 32,
+    "fields": {
+      "name": "Betadine Ointment",
+      "brand": "Win-Medicare",
+      "active_ingredient": "Povidone-iodine",
+      "strength": "5%",
+      "form": "cream",
+      "category": "skin"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 33,
+    "fields": {
+      "name": "Soframycin Cream",
+      "brand": "Sanofi",
+      "active_ingredient": "Framycetin",
+      "strength": "1%",
+      "form": "cream",
+      "category": "skin"
+    }
+  },
+  {
+    "model": "medicines.medicine",
+    "pk": 34,
+    "fields": {
+      "name": "Candid Cream",
+      "brand": "Glenmark",
+      "active_ingredient": "Clotrimazole",
+      "strength": "1%",
+      "form": "cream",
+      "category": "skin"
+    }
+  }
+]

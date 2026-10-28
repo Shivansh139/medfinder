@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h3 mb-3">Log in</h1>
+        <form method="post">
+          {% csrf_token %}  {# hidden token that protects the form from CSRF attacks #}
+          {% include "includes/form_fields.html" %}
+          {# Where to go after login, e.g. back to the page that needed login #}
+          <input type="hidden" name="next" value="{{ next }}">
+          <button type="submit" class="btn btn-success w-100">Log in</button>
+        </form>
+        <p class="mt-3 mb-0 text-center">
+          No account? <a href="{% url 'signup' %}">Sign up</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

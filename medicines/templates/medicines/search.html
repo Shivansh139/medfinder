@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if query %}{{ query }} – {% endif %}Search medicines{% endblock %}
+
+{% block extra_head %}{% include "includes/leaflet_css.html" %}{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">Find a medicine</h1>
+
+<!-- Search form. method="get" puts the search in the URL, so it can be shared. -->
+<form method="get" id="search-form" class="mb-2" role="search">
+  <div class="input-group mb-2">
+    {{ form.q }}
+    <button type="submit" class="btn btn-success">Search</button>
+  </div>
+
+  <!-- Filters: 2 per row on phones, 4 per row on larger screens -->
+  <div class="row g-2">
+    <div class="col-6 col-md-3">
+      <label class="form-label small mb-1" for="{{ form.availability.id_for_label }}">Availability</label>
+      {{ form.availability }}
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label small mb-1" for="{{ form.radius.id_for_label }}">Distance</label>
+      {{ form.radius }}
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label small mb-1" for="{{ form.sort.id_for_label }}">Sort by</label>
+      {{ form.sort }}
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label small mb-1" for="{{ form.near.id_for_label }}">Near</label>
+      {{ form.near }}
+    </div>
+  </div>
+  {# Hidden: filled in by the "Use my location" button #}
+  {{ form.lat }}{{ form.lng }}
+
+  <div class="d-flex flex-wrap gap-2 mt-2">
+    <button type="submit" class="btn btn-outline-success btn-sm">Apply filters</button>
+    <button type="button" id="use-my-location" class="btn btn-outline-primary btn-sm">📍 Use my location</button>
+  </div>
+  <div id="location-status" class="form-text" aria-live="polite"></div>
+</form>
+
+<p class="small text-muted mb-3">Distances from: <strong>{{ location.label }}</strong></p>
+
+{% if query %}
+  {% include "includes/stock_notice.html" %}
+
+  {% if page_obj.object_list %}
+    <p class="small mb-2">{{ result_count }} result{{ result_count|pluralize }} for "<strong>{{ query }}</strong>"</p>
+
+    <div class="row g-3">
+      <!-- Map: on phones it comes first (order-0); on large screens it moves right -->
+      <div class="col-lg-5 order-lg-2">
+        <div id="results-map" class="results-map border rounded"></div>
+      </div>
+
+      <!-- Results list -->
+      <div class="col-lg-7 order-lg-1">
+        {% for item in page_obj %}
+          {% with pharmacy=item.pharmacy medicine=item.medicine %}
+            <div class="card shadow-sm mb-2">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between gap-2">
+                  <div>
+                    <div class="fw-semibold">{{ medicine.name }} <span class="text-muted fw-normal">{{ medicine.strength }}</span></div>
+                    <div class="small text-muted">{{ medicine.active_ingredient }} · {{ medicine.get_form_display }}</div>
+                  </div>
+                  <div class="text-end text-nowrap">
+                    {% if item.is_available %}
+                      <span class="badge text-bg-success">In stock</span>
+                    {% else %}
+                      <span class="badge text-bg-danger">Out of stock</span>
+                    {% endif %}
+                    <div class="fw-semibold mt-1">₹{{ item.price }}</div>
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <a href="{% url 'pharmacy_detail' pharmacy.pk %}{% if location_params %}?{{ location_params }}{% endif %}"
+                     class="fw-semibold text-decoration-none">{{ pharmacy.name }}</a>
+                  <span class="small text-muted">
+                    · {% if item.distance_km is not None %}{{ item.distance_km|floatformat:1 }} km away{% else %}distance unknown{% endif %}
+                    {% if pharmacy.home_delivery_available %}· 🚚 Delivers{% endif %}
+                  </span>
+                  <div class="small text-muted">{{ pharmacy.address|truncatechars:60 }}</div>
+                </div>
+
+                {# Stale-data label: stock not updated for 7+ days #}
+                {% if item.is_stale %}
+                  <div class="small text-warning-emphasis bg-warning-subtle rounded px-2 py-1 mt-2">
+                    ⚠ Stock last updated {{ item.last_updated|timesince }} ago – may be outdated
+                  </div>
+                {% else %}
+                  <div class="small text-muted mt-1">Stock updated {{ item.last_updated|timesince }} ago</div>
+                {% endif %}
+
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  {# tel: links open the phone's dialler #}
+                  <a href="tel:{{ pharmacy.phone|cut:' ' }}" class="btn btn-sm btn-success">📞 Call</a>
+                  <a href="{% url 'pharmacy_detail' pharmacy.pk %}{% if location_params %}?{{ location_params }}{% endif %}"
+                     class="btn btn-sm btn-outline-success">View pharmacy</a>
+                  {# Only customers (or visitors, who will be asked to log in) can send requests. #}
+                  {% if not user.is_authenticated or user.is_customer %}
+                    <a href="{% url 'request_create' item.pk %}" class="btn btn-sm btn-outline-primary">Ask pharmacy</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+          <nav class="mt-3" aria-label="Result pages">
+            <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?{{ filter_params }}&page={{ page_obj.previous_page_number }}">Previous</a></li>
+              {% endif %}
+              <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+              {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?{{ filter_params }}&page={{ page_obj.next_page_number }}">Next</a></li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Map data for search_map.js. json_script escapes it safely (no script injection). #}
+    {{ map_data|json_script:"map-data" }}
+  {% else %}
+    <div class="alert alert-secondary">
+      No approved pharmacy matches "<strong>{{ query }}</strong>" with these filters.
+      Try "All" availability, a larger distance, or another name.
+    </div>
+  {% endif %}
+{% else %}
+  <!-- No search yet: suggest a few to try -->
+  <p class="mb-2">Type a medicine name, generic name or manufacturer. For example:</p>
+  <div class="d-flex flex-wrap gap-2">
+    {% for word in suggestions %}
+      <a href="?q={{ word|urlencode }}" class="btn btn-sm btn-outline-secondary">{{ word }}</a>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+  <script src="{% static 'js/search_map.js' %}"></script>
+{% endblock %}

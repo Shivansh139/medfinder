@@ -1,0 +1,20 @@
+<!doctype html>
+{# Django uses this page for server errors when DEBUG is off. It is kept    #}
+{# separate from base.html on purpose: if something is broken, this page    #}
+{# must still show, so it uses no database, no user and no template tags.   #}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Server error | MediFind</title>
+  <style>
+    body { font-family: system-ui, sans-serif; text-align: center; padding: 3rem 1rem; color: #212529; }
+    a { display: inline-block; margin-top: 1rem; padding: .5rem 1rem; background: #198754; color: #fff; border-radius: .375rem; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>500 – Something went wrong</h1>
+  <p>Sorry, the server had a problem. Please try again in a minute.</p>
+  <a href="/">Back to home</a>
+</body>
+</html>
