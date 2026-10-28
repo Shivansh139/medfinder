@@ -1,9 +1,8 @@
 # MediFind – Progress
 
 ## Current phase
-**Phase 7 – Deployment: code done and tested, waiting on your manual steps.**
-Your steps: Neon project → GitHub repository and push → Render web service → load data into Neon from the laptop → open the site on your phone.
-Phase 7 is complete only when you confirm the public URL loads on your phone.
+**Phase 7 – Deployment: done.** You confirmed the live site works on your phone. Waiting for your approval.
+Next: Phase 8 – README and demo script for each role.
 
 ## Roadmap
 1. ✅ Skeleton
@@ -12,7 +11,7 @@ Phase 7 is complete only when you confirm the public URL loads on your phone.
 4. ✅ Medicines and inventory
 5. ✅ Customer search, map and pharmacy details
 6. ✅ Availability requests
-7. 🔄 Deployment (Neon, Render, HTTPS settings, health check)
+7. ✅ Deployment (Neon, Render, HTTPS settings, health check)
 8. README and demo script for each role
 
 ## Completed phases
@@ -100,7 +99,7 @@ Phase 7 is complete only when you confirm the public URL loads on your phone.
 - Limitation: **no notifications** (SMS/email would need an outside service). Customers check **My requests**.
 - Verified: **114 tests pass** (29 new: create rules, roles, approved-only, duplicates, quantity limits, tampering, customer and pharmacy ownership, cancel/respond only when pending, POST-only cancel, contact-phone privacy, dashboards, button visibility; plus `seed_demo` request checks). Full flow checked in the browser at 375 px: visitor → **Ask pharmacy** → login → back to form → send → **Pending** → pharmacy dashboard "1 pending request" → **Respond: Confirmed** with a reply → customer sees **Confirmed**, the reply and **📞 Call pharmacy**.
 
-### Phase 7 – Deployment (in progress: waiting on your manual steps)
+### Phase 7 – Deployment
 - (Your original Phase 7 – map, geolocation with an Indore fallback, idempotent fictional seed data – was already built in Phases 3–6.)
 - Decisions: **gunicorn** as the production web server; **Singapore** region for both Render and Neon (closest to India, and the same region keeps database queries fast); **HSTS 1 hour** while testing.
 - `settings.py`:
@@ -114,6 +113,13 @@ Phase 7 is complete only when you confirm the public URL loads on your phone.
 - Git repository created; `.env`, `db.sqlite3`, `venv/`, `staticfiles/` are not included (checked, plus a scan for secrets).
 - `check --deploy` with production values: 2 warnings left **on purpose**: W005 (HSTS for subdomains) and W021 (HSTS preload). `*.onrender.com` subdomains belong to other people's sites, so we must not set those.
 - Verified: **118 tests pass** (4 new: health check ok / database down / POST rejected, friendly 404). Production simulated locally with `DEBUG=False`: http → 301 to https, HSTS header sent, CSS served with a hashed filename, `/healthz/` answers over http, unknown host → 400, CSRF cookie marked secure.
+
+- **Live setup** (done by you, step by step):
+  - Neon project `medifind`, region AWS Asia Pacific 1 (Singapore), direct connection (pooling off).
+  - GitHub repository `Shivansh139/medfinder` (public). Render redeploys automatically on every `git push`.
+  - Render free web service `medfinder`, region Singapore. Build: `bash build.sh`. Start: `gunicorn medifind.wsgi`. Environment variables: `SECRET_KEY` (a new key, not the local one), `DEBUG=False`, `DATABASE_URL` (Neon).
+  - Admin account and demo data created in Neon from the laptop (`createsuperuser`, `seed_demo` with a new password, not the example one). The live database does not contain the local test accounts.
+- **Confirmed by you:** the public URL and the admin panel load on your phone.
 
 ## Files created
 
@@ -243,17 +249,33 @@ venv\Scripts\python manage.py makemigrations
 venv\Scripts\python manage.py migrate
 ```
 
+Run a command against the live Neon database (PowerShell, one terminal window only; closing the window switches back to SQLite):
+```powershell
+$env:DATABASE_URL = "your-neon-connection-string"
+venv\Scripts\python manage.py shell -c "from django.db import connection; print(connection.vendor)"   # must print postgresql
+venv\Scripts\python manage.py createsuperuser
+venv\Scripts\python manage.py seed_demo --password "your-live-demo-password"
+```
+
+Deploy a change: commit, then `git push`. Render rebuilds automatically (about 3–5 minutes).
+
+Production check (run locally; 2 HSTS warnings, W005 and W021, are expected):
+```bash
+set DEBUG=False&& venv\Scripts\python manage.py check --deploy
+```
+
 ## Open issues
-- **Viva is on the deployed site, on a phone.** Phase 7 must cover:
-  - running `seed_demo` and `createsuperuser` against Neon from the laptop (Render free tier has no shell)
-  - a non-example password for the live demo accounts
-  - a warning that the free tier sleeps (open the site a few minutes before the viva)
-  - switching accounts on the phone with a normal tab plus an Incognito tab, or two browsers
+- **Viva day (live site on the phone):**
+  - The free Render site sleeps after 15 minutes without visitors; the first visit then takes about 50 seconds. Open it 5 minutes before the viva.
+  - Neon's free database also sleeps when idle; the first query wakes it in a second or two.
+  - Switch accounts with a normal tab plus an Incognito tab, or two browsers.
+- Render health check path not set yet (optional): Render → service → **Settings → Health Check Path** → `/healthz/`.
+- If a secret is ever exposed (screenshot, chat): generate a new `SECRET_KEY` in Render, and reset the Neon password (then update `DATABASE_URL` in Render).
 - Time zone set to `Asia/Kolkata`; confirm this is correct.
 - No password reset (needs an email service, which is outside the stack).
 - Tests print a harmless WhiteNoise warning ("No directory at staticfiles") because `collectstatic` has not been run locally.
 - The local database contains two test accounts from browser testing (they also have one confirmed test request between them): `demo_pharmacy` (approved pharmacy "Demo Care Pharmacy", now with a location, opening hours and one inventory item, Dolo 650 at quantity 0) and `demo_customer`. They can be kept for later demos or deleted in the admin.
-- **Demo Care Pharmacy** (`demo_pharmacy`, a test pharmacy) has its pin in Maharashtra (~485 km from Indore) from an early map test. In search results it zooms the map out to half of India. Before the viva, move its pin to Indore on its profile page, or reject it in the admin.
+- **Local database only:** **Demo Care Pharmacy** (`demo_pharmacy`, a test pharmacy) has its pin in Maharashtra (~485 km from Indore) from an early map test. In search results it zooms the map out to half of India. Before the viva, move its pin to Indore on its profile page, or reject it in the admin.
 - The distance filter runs in Python after the database query. Fine for a city-sized demo; a large system would use a spatial database (e.g. PostGIS).
 - `medicines/migrations/0002` only removes a duplicate "Price in ₹" help text. It is harmless and kept rather than rewriting migration history.
 - "Use my current location" depends on the browser allowing location access. It works only on `localhost` or HTTPS, so it will work on Render, which uses HTTPS. **The Claude in-app browser pane blocks location access** (error "User denied Geolocation"), so test this button in real Chrome/Edge or on a phone. The picker now shows a specific message for each failure (permission blocked, position unavailable, timeout) and gives up after 15 s.
